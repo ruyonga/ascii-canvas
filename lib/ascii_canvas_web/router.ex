@@ -7,5 +7,7 @@ defmodule AsciiCanvasWeb.Router do
 
   scope "/api", AsciiCanvasWeb do
     pipe_through :api
+
+    resources "/images", ImageController, except: [:new, :edit]
   end
 end
