@@ -6,10 +6,10 @@ jobs:
   build:
 
     name: Build and test
-    test:
-      runs-on: ubuntu-latest
+  
+    runs-on: ubuntu-latest
 
-      services:
+    services:
         db:
           image: postgres:11
           ports: ['5432:5432']
