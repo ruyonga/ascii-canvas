@@ -35,3 +35,4 @@ ascii_canvas-*.tar
 # variables.
 /config/*.secret.exs
 .idea/
+ascii_canvas.iml

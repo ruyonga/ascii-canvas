@@ -7,7 +7,7 @@ defmodule AsciiCanvas.CanvasTest do
     alias AsciiCanvas.Canvas.Image
 
     @valid_attrs %{url: "some url"}
-    @update_attrs %{ url: "some updated url"}
+    @update_attrs %{url: "some updated url"}
     @invalid_attrs %{url: nil}
 
     def image_fixture(attrs \\ %{}) do

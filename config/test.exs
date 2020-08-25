@@ -14,9 +14,8 @@ config :logger, level: :warn
 
 # Configure your database
 config :ascii_canvas, AsciiCanvas.Repo,
-       username: "postgres",
-       password: "postgres",
-       database: "ascii_canvas_test",
-       hostname: "localhost",
-       pool: Ecto.Adapters.SQL.Sandbox
-
+  username: "postgres",
+  password: "postgres",
+  database: "ascii_canvas_test",
+  hostname: "localhost",
+  pool: Ecto.Adapters.SQL.Sandbox

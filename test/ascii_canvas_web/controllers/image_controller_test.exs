@@ -7,9 +7,7 @@ defmodule AsciiCanvasWeb.ImageControllerTest do
   @create_attrs %{
     url: "some url"
   }
-  @update_attrs %{
-    url: "some updated url"
-  }
+
   @invalid_attrs %{id: nil, url: nil}
 
   def fixture(:image) do
@@ -44,40 +42,6 @@ defmodule AsciiCanvasWeb.ImageControllerTest do
     test "renders errors when data is invalid", %{conn: conn} do
       conn = post(conn, Routes.image_path(conn, :create), image: @invalid_attrs)
       assert json_response(conn, 422)["errors"] != %{}
-    end
-  end
-
-  describe "update image" do
-    setup [:create_image]
-
-    test "renders image when data is valid", %{conn: conn, image: %Image{id: id} = image} do
-      conn = put(conn, Routes.image_path(conn, :update, image), image: @update_attrs)
-      assert %{"id" => ^id} = json_response(conn, 200)["data"]
-
-      conn = get(conn, Routes.image_path(conn, :show, id))
-
-      assert %{
-               "id" => id,
-               "url" => "some updated url"
-             } = json_response(conn, 200)["data"]
-    end
-
-    test "renders errors when data is invalid", %{conn: conn, image: image} do
-      conn = put(conn, Routes.image_path(conn, :update, image), image: @invalid_attrs)
-      assert json_response(conn, 422)["errors"] != %{}
-    end
-  end
-
-  describe "delete image" do
-    setup [:create_image]
-
-    test "deletes chosen image", %{conn: conn, image: image} do
-      conn = delete(conn, Routes.image_path(conn, :delete, image))
-      assert response(conn, 204)
-
-      assert_error_sent 404, fn ->
-        get(conn, Routes.image_path(conn, :show, image))
-      end
     end
   end
 

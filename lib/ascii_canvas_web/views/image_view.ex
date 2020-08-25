@@ -11,8 +11,9 @@ defmodule AsciiCanvasWeb.ImageView do
   end
 
   def render("image.json", %{image: image}) do
-    %{id: image.id,
+    %{
       id: image.id,
-      url: image.url}
+      url: image.url
+    }
   end
 end
