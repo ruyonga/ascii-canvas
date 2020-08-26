@@ -23,22 +23,33 @@ defmodule AsciiCanvasWeb.ImageController do
         process_request(conn, image_params)
 
       _ ->
+        response = %{
+          status: "failed",
+          error: "Fill or boarder are required for each art to be drawn"
+        }
+
         conn
         |> put_status(400)
         |> put_view(ErrorView)
         |> render(
           "400.json",
-          error_message: "Fill or boarder are required for each art to be drawn"
+          error_message: response
         )
     end
   end
 
   defp process_request(conn, image_params) do
     with {:ok, %Image{} = image} <- DrawImage.draw(image_params) do
+      response = %{
+        status: "successful",
+        message: "Canvas generated successfully",
+        canvas: parse_url(image, conn)
+      }
+
       conn
       |> put_status(:created)
       |> put_resp_header("location", Routes.image_path(conn, :show, image))
-      |> render("show.json", image: parse_url(image, conn))
+      |> render("show.json", image: response)
     end
   end
 

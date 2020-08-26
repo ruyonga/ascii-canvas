@@ -15,6 +15,6 @@ defmodule AsciiCanvasWeb.ErrorView do
   end
 
   def render("400.json", %{error_message: message}) do
-    %{code: 400, error: message}
+    message
   end
 end

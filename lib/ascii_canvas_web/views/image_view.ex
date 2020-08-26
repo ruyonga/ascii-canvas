@@ -7,7 +7,14 @@ defmodule AsciiCanvasWeb.ImageView do
   end
 
   def render("show.json", %{image: image}) do
-    %{data: render_one(image, ImageView, "image.json")}
+    %{
+      status: image.status,
+      message: image.message,
+      canvas: %{
+        id: image.canvas.id,
+        url: image.canvas.url
+      }
+    }
   end
 
   def render("image.json", %{image: image}) do

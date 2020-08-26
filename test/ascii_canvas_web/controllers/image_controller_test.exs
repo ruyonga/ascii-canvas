@@ -62,12 +62,15 @@ defmodule AsciiCanvasWeb.ImageControllerTest do
   describe "create image" do
     test "renders image when data is valid", %{conn: conn} do
       conn = post(conn, Routes.image_path(conn, :create), @create_attrs)
-      assert %{"id" => id} = json_response(conn, 201)["data"]
+      response = json_response(conn, 201)
+      assert response["message"] == "Canvas generated successfully"
+      assert response["status"] == "successful"
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
       conn = post(conn, Routes.image_path(conn, :create), @invalid_attrs)
-      assert json_response(conn, 400)
+      response = json_response(conn, 400)
+      assert response["status"] == "failed"
     end
   end
 end
