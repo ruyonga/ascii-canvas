@@ -36,3 +36,4 @@ ascii_canvas-*.tar
 /config/*.secret.exs
 .idea/
 ascii_canvas.iml
+.DS_Store
