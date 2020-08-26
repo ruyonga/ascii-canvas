@@ -11,8 +11,8 @@ defmodule AsciiCanvasWeb.Endpoint do
   # You should set gzip to true if you are running phx.digest
   # when deploying your static files in production.
   plug Plug.Static,
-    at: "/",
-    from: :ascii_canvas,
+    at: "/priv/images",
+    from: "/priv/images",
     gzip: false,
     only: ~w(css fonts images js favicon.ico robots.txt)
 

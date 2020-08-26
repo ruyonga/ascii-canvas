@@ -28,35 +28,65 @@ Implement REST API to generate Ascii art on a fixed size canvas at specified ``x
 # Request
 - fill & boarder parameter are optional
 - At least one of fill / boarder should be supplied 
-
+- You create one or more shapes on the same canvas.
 ````
 {
-    "position": {
-        "x": 0,
-        "y": 0
-    },
-    "fill": "-",
-    "boarder": "@",
-    "length" : 10,
-    "width" : 10,
-    "shape": "rectangle"
-}
+    	"images": [
+    		{
+    			"position": {
+    				"x": 20,
+    				"y": 20
+    			},
+    			"fill": "-",
+    			"boarder": "@",
+    			"length": 10,
+    			"width": 10,
+    			"shape": "rectangle"
+    		},
+    		{
+    			"position": {
+    				"x": 20,
+    				"y": 40
+    			},
+    			"fill": "-",
+    			"boarder": "@",
+    			"length": 10,
+    			"width": 10,
+    			"shape": "rectangle"
+    		}
+    	]
+    }
 ````
 Curl
 
     curl --request POST \
-      --url http://localhost:5000/api/v1 \
+      --url http://localhost:4000/api/images \
       --header 'content-type: application/json' \
       --data '{
-    	"position": {
-    		"x": 0,
-    		"y": 0
-    	},
-    	"fill": "-",
-    	"boarder": "@",
-    	"length": 10,
-    	"width": 10,
-    	"shape": "rectangle"
+    	"images": [
+    		{
+    			"position": {
+    				"x": 20,
+    				"y": 20
+    			},
+    			"fill": "-",
+    			"boarder": "@",
+    			"length": 10,
+    			"width": 10,
+    			"shape": "rectangle"
+    		},
+    		{
+    			"position": {
+    				"x": 20,
+    				"y": 40
+    			},
+    			"fill": "-",
+    			"boarder": "@",
+    			"length": 10,
+    			"width": 10,
+    			"shape": "rectangle"
+    		}
+    	]
     }'
 
 
