@@ -12,7 +12,7 @@ defmodule AsciiCanvasWeb.Endpoint do
   # when deploying your static files in production.
   plug Plug.Static,
     at: "/",
-    from:  :ascii_canvas,
+    from: :ascii_canvas,
     gzip: false,
     only: ~w(css fonts images js favicon.ico robots.txt)
 

@@ -1,14 +1,47 @@
 defmodule AsciiCanvasWeb.ImageControllerTest do
   use AsciiCanvasWeb.ConnCase
-
   alias AsciiCanvas.Canvas
-  alias AsciiCanvas.Canvas.Image
 
   @create_attrs %{
-    url: "some url"
+    "images" => [
+      %{
+        "position" => %{
+          "x" => 20,
+          "y" => 20
+        },
+        "fill" => "-",
+        "boarder" => "@",
+        "length" => 10,
+        "width" => 10,
+        "shape" => "rectangle"
+      },
+      %{
+        "position" => %{
+          "x" => 20,
+          "y" => 40
+        },
+        "fill" => "-",
+        "boarder" => "@",
+        "length" => 10,
+        "width" => 10,
+        "shape" => "rectangle"
+      }
+    ]
   }
 
-  @invalid_attrs %{id: nil, url: nil}
+  @invalid_attrs %{
+    "images" => [
+      %{
+        "position" => %{
+          "x" => 20,
+          "y" => 20
+        },
+        "length" => 10,
+        "width" => 10,
+        "shape" => "rectangle"
+      }
+    ]
+  }
 
   def fixture(:image) do
     {:ok, image} = Canvas.create_image(@create_attrs)
@@ -28,25 +61,13 @@ defmodule AsciiCanvasWeb.ImageControllerTest do
 
   describe "create image" do
     test "renders image when data is valid", %{conn: conn} do
-      conn = post(conn, Routes.image_path(conn, :create), image: @create_attrs)
+      conn = post(conn, Routes.image_path(conn, :create), @create_attrs)
       assert %{"id" => id} = json_response(conn, 201)["data"]
-
-      conn = get(conn, Routes.image_path(conn, :show, id))
-
-      assert %{
-               "id" => id,
-               "url" => "some url"
-             } = json_response(conn, 200)["data"]
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, Routes.image_path(conn, :create), image: @invalid_attrs)
-      assert json_response(conn, 422)["errors"] != %{}
+      conn = post(conn, Routes.image_path(conn, :create), @invalid_attrs)
+      assert json_response(conn, 400)
     end
-  end
-
-  defp create_image(_) do
-    image = fixture(:image)
-    {:ok, image: image}
   end
 end
