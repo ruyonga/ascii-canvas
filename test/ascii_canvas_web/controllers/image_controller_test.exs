@@ -10,7 +10,7 @@ defmodule AsciiCanvasWeb.ImageControllerTest do
           "y" => 20
         },
         "fill" => "-",
-        "boarder" => "@",
+        "border" => "@",
         "length" => 10,
         "width" => 10,
         "shape" => "rectangle"
@@ -21,7 +21,7 @@ defmodule AsciiCanvasWeb.ImageControllerTest do
           "y" => 40
         },
         "fill" => "-",
-        "boarder" => "@",
+        "border" => "@",
         "length" => 10,
         "width" => 10,
         "shape" => "rectangle"

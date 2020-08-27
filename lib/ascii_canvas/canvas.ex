@@ -7,51 +7,23 @@ defmodule AsciiCanvas.Canvas do
   alias AsciiCanvas.Repo
 
   alias AsciiCanvas.Canvas.Image
+  alias AsciiCanvas.Canvas.Art
 
-  @doc """
-  Returns the list of images.
-
-  ## Examples
-
-      iex> list_images()
-      [%Image{}, ...]
-
-  """
   def list_images do
     Repo.all(Image)
   end
 
-  @doc """
-  Gets a single image.
-
-  Raises `Ecto.NoResultsError` if the Image does not exist.
-
-  ## Examples
-
-      iex> get_image!(123)
-      %Image{}
-
-      iex> get_image!(456)
-      ** (Ecto.NoResultsError)
-
-  """
   def get_image!(id), do: Repo.get!(Image, id)
 
-  @doc """
-  Creates a image.
-
-  ## Examples
-
-      iex> create_image(%{field: value})
-      {:ok, %Image{}}
-
-      iex> create_image(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
   def create_image(attrs \\ %{}) do
     %Image{}
     |> Image.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def save_art_work_parameter(attrs \\ %{}) do
+    %Art{}
+    |> Art.changeset(attrs)
     |> Repo.insert()
   end
 end

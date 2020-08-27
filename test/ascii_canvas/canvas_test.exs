@@ -5,9 +5,27 @@ defmodule AsciiCanvas.CanvasTest do
 
   describe "images" do
     alias AsciiCanvas.Canvas.Image
-
+    alias AsciiCanvas.Canvas.Art
     @valid_attrs %{url: "some url"}
     @invalid_attrs %{url: nil}
+
+    @valid_art_attrs %{
+      "border" => "@",
+      "fill" => "-",
+      "length" => 10,
+      "position" => %{"x" => 20, "y" => 20},
+      "shape" => "rectangle",
+      "width" => 10
+    }
+
+    @invalid_art_attrs %{
+      "border" => nil,
+      "fill" => nil,
+      "length" => 10,
+      "position" => nil,
+      "shape" => nil,
+      "width" => nil
+    }
 
     def image_fixture(attrs \\ %{}) do
       {:ok, image} =
@@ -30,6 +48,17 @@ defmodule AsciiCanvas.CanvasTest do
 
     test "create_image/1 with invalid data returns error changeset" do
       assert {:error, %Ecto.Changeset{}} = Canvas.create_image(@invalid_attrs)
+    end
+
+    test "save art parameter/1 with valid data creates an ascii image shape paramter enter" do
+      assert {:ok, %Art{} = art} = Canvas.save_art_work_parameter(@valid_art_attrs)
+      assert art.border == "@"
+      assert art.length == 10
+
+    end
+
+    test "save art parameter/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Canvas.create_image(@invalid_art_attrs)
     end
   end
 end

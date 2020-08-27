@@ -17,7 +17,7 @@ defmodule AsciiCanvasWeb.ImageController do
   end
 
   def create(conn, %{"images" => image_params}) do
-    Enum.all?(image_params, fn x -> Map.has_key?(x, "fill") || Map.has_key?(x, "boarder") end)
+    Enum.all?(image_params, fn x -> Map.has_key?(x, "fill") || Map.has_key?(x, "border") end)
     |> case do
       true ->
         process_request(conn, image_params)
@@ -25,7 +25,7 @@ defmodule AsciiCanvasWeb.ImageController do
       _ ->
         response = %{
           status: "failed",
-          error: "Fill or boarder are required for each art to be drawn"
+          error: "Either fill or border are required for each shape to be drawn"
         }
 
         conn
@@ -40,6 +40,7 @@ defmodule AsciiCanvasWeb.ImageController do
 
   defp process_request(conn, image_params) do
     with {:ok, %Image{} = image} <- DrawImage.draw(image_params) do
+
       response = %{
         status: "successful",
         message: "Canvas generated successfully",
@@ -59,4 +60,7 @@ defmodule AsciiCanvasWeb.ImageController do
   end
 
   defp parse_url(image, conn), do: %{image | url: "#{request_url(conn)}/#{image.url}"}
+
+
+
 end

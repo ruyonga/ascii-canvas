@@ -4,51 +4,125 @@ defmodule AsciiCanvas.Canvas.DrawImage do
   alias AsciiCanvas.Canvas
   import Mogrify
 
-  def draw(image_params) do
-    image_name =
-      :os.system_time(:millisecond)
-      |> Integer.to_string()
+  @image_name :os.system_time(:millisecond) |> Integer.to_string()
 
+  # My research show usage of imagemick functionality could help in the production of the image
+
+  def draw(image_params) do
     image =
-      %Mogrify.Image{path: "#{image_name}.png", ext: "png"}
-      |> custom("size", "580x580")
+      %Mogrify.Image{path: "#{@image_name}.png", ext: "png"}
+      |> custom("size", "250x250")
       |> canvas("white")
       |> custom("fill", "black")
-      |> Mogrify.Draw.text(10, 50, create_horizontal_boarder(10, "&"))
-      |> custom("draw", " translate 50,50 rotate -90 text #{10},#{50} '#{create_vertical_boarder(4, "&")}'")
-      |> Mogrify.Draw.text(10, 100, create_horizontal_boarder(10, "&"))
-      |> create(path: image_path(image_name))
-    print_art(image_params)
-    save_image_url("#{image_name}.png")
+
+    Enum.each(image_params, fn art ->
+      on_canvas_draw(image, art)
+    end)
+
+    save_image_url("#{@image_name}.png")
   end
 
-  defp print_art(image_params) do
+  defp on_canvas_draw( image,
+         %{
+            "length" => _length,
+            "width" => _width,
+            "border" => _border,
+            "position" => _position} =
+           art
+       ) do
 
-    image_params
-    |> Enum.each(fn x ->
-      x = Helper.atomize_map_keys(x)
-      rectangle(x.length, x.width, x.boarder, x.fill) end)
+    draw_on_console(art)
+    params = Helper.atomize_map_keys(art)
+
+    Mogrify.Draw.text(
+      image,
+      params.position.x,
+      params.position.y,
+      create_horizontal_border(params.length, params.border)
+    )
+    |> custom( "draw", "translate 50,50 rotate -90 text #{params.position.x},#{params.position.y} '#{create_vertical_border(4, params.border)}'")
+    |> Mogrify.Draw.text(
+      params.position.x,
+      params.position.y,
+      create_horizontal_border(params.length, params.border)
+    ) |> create(path: image_path(@image_name))
   end
 
+  defp on_canvas_draw( image, %{"length" => _length, "width" => _width, "fill" => _fill, "position" => _position} = art ) do
+    draw_on_console(art)
 
-  defp save_image_url(url), do: Canvas.create_image(%{"url" => url})
+    params = Helper.atomize_map_keys(art)
 
-  defp create_horizontal_boarder(width, c),
-       do:
-         Enum.into(1..width, [], fn _x -> c end)
-         |> List.to_string()
+    Mogrify.Draw.text(
+      image,
+      params.position.x,
+      params.position.y,
+      create_horizontal_border(params.length, params.fill)
+    )
+    |> custom(
+      "draw",
+      "translate 50,50 rotate -90 text #{params.position.x},#{params.position.y} ' #{
+        create_vertical_border(4, params.fill)
+      }'")
+    |> Mogrify.Draw.text(
+      params.position.x,
+      params.position.y,
+      create_horizontal_border(params.length, params.fill)
+    )
+    |> create(path: image_path(@image_name))
+    |> IO.inspect()
 
-  defp create_vertical_boarder(height, c),
-       do:
-         Enum.into(1..height, [], fn _x -> c end)
-         |> List.to_string()
+  end
 
-  defp create_fill(width, fill),
-       do:
-         Enum.into(1..(width - 2), [], fn _x -> fill end)
-         |> List.to_string()
+  defp on_canvas_draw( image,
+         %{
+           "length" => _length,
+           "width" => _width,
+           "fill" => _fill,
+           "border" => _border,
+           "position" => _position
+         } = art
+       ) do
 
-  def rectangle(r, c, out, inside) do
+    draw_on_console(art)
+    params = Helper.atomize_map_keys(art)
+
+    Mogrify.Draw.text(
+      params.position.x,
+      params.position.y,
+      create_horizontal_border(params.length, params.border)
+    )
+    |> Mogrify.Draw.text(
+      image,
+      params.position.x,
+      params.position.y,
+      create_fill(params.length, params.fill)
+    )
+    |> custom(
+      "draw",
+      "translate 50,50 rotate -90 text #{params.position.x},#{params.position.y} ' #{
+        create_vertical_border(4, params.border)
+      }'"
+    )
+    |> Mogrify.Draw.text(
+      image,
+      params.position.x,
+      params.position.y,
+      create_horizontal_border(params.length, params.border)
+    )
+    |> create(path: image_path(@image_name))
+    |> IO.inspect()
+  end
+
+  @doc """
+   Output individual ascii characters in the console.
+  """
+  def draw_on_console(image_params) do
+    image_params |> Enum.each(fn x -> rectangle(x) end)
+  end
+
+  def draw_rectangle(r, c, out, inside) do
+    In
     Enum.each(
       1..r,
       fn x ->
@@ -62,10 +136,33 @@ defmodule AsciiCanvas.Canvas.DrawImage do
             end
           end
         )
+
         IO.puts("")
       end
     )
   end
+
+  defp rectangle(%{"length" => length, "width" => width, "border" => border}), do: draw_rectangle(length, width, border, " ")
+  defp rectangle(%{"length" => length, "width" => width, "fill" => fill}), do: draw_rectangle(length, width, " ", fill)
+  defp rectangle(%{"length" => length, "width" => width, "border" => border, "fill" => fill}), do: draw_rectangle(length, width, border, fill)
+  defp rectangle(_art), do: nil
+
+  defp save_image_url(url), do: Canvas.create_image(%{"url" => url})
+
+  defp create_horizontal_border(width, c),
+    do:
+      Enum.into(1..width, [], fn _x -> c end)
+      |> List.to_string()
+
+  defp create_vertical_border(height, c),
+    do:
+      Enum.into(1..height, [], fn _x -> c end)
+      |> List.to_string()
+
+  defp create_fill(width, fill),
+    do:
+      Enum.into(1..(width - 2), [], fn _x -> fill end)
+      |> List.to_string()
 
   defp draw_character(c), do: IO.write(c)
 
