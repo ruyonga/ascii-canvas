@@ -18,7 +18,7 @@ defmodule AsciiCanvas.Canvas.Art do
   @doc false
   def changeset(art, attrs) do
     art
-    |> cast(attrs, [:position, :length, :width, :border, :fill, :shape])
-    |> validate_required([:position, :length, :width, :shape])
+    |> cast(attrs, [:position, :length, :width, :border, :fill, :shape, :image_id])
+    |> validate_required([:position, :length, :width, :shape, :image_id])
   end
 end

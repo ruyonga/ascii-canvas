@@ -1,6 +1,5 @@
 defmodule AsciiCanvasWeb.ImageController do
   use AsciiCanvasWeb, :controller
-
   alias AsciiCanvas.Canvas
   alias AsciiCanvas.Canvas.{Image, DrawImage}
   alias AsciiCanvasWeb.ErrorView
@@ -45,6 +44,12 @@ defmodule AsciiCanvasWeb.ImageController do
         message: "Canvas generated successfully",
         canvas: parse_url(image, conn)
       }
+
+      Enum.each(image_params, fn art ->
+        art
+        |> Map.put("image_id", image.id)
+        |> Canvas.save_art_work_parameter()
+      end)
 
       conn
       |> put_status(:created)

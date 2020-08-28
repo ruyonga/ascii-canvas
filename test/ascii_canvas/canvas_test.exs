@@ -13,7 +13,10 @@ defmodule AsciiCanvas.CanvasTest do
       "border" => "@",
       "fill" => "-",
       "length" => 10,
-      "position" => %{"x" => 20, "y" => 20},
+      "position" => %{
+        "x" => 20,
+        "y" => 20
+      },
       "shape" => "rectangle",
       "width" => 10
     }
@@ -24,7 +27,8 @@ defmodule AsciiCanvas.CanvasTest do
       "length" => 10,
       "position" => nil,
       "shape" => nil,
-      "width" => nil
+      "width" => nil,
+      "image_id" => nil
     }
 
     def image_fixture(attrs \\ %{}) do
@@ -51,7 +55,13 @@ defmodule AsciiCanvas.CanvasTest do
     end
 
     test "save art parameter/1 with valid data creates an ascii image shape paramter enter" do
-      assert {:ok, %Art{} = art} = Canvas.save_art_work_parameter(@valid_art_attrs)
+      image = image_fixture()
+
+      param =
+        @valid_art_attrs
+        |> Map.put("image_id", image.id)
+
+      assert {:ok, %Art{} = art} = Canvas.save_art_work_parameter(param)
       assert art.border == "@"
       assert art.length == 10
     end

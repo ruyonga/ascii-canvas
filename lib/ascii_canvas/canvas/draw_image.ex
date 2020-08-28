@@ -13,6 +13,7 @@ defmodule AsciiCanvas.Canvas.DrawImage do
       |> custom("size", "250x250")
       |> canvas("white")
       |> custom("fill", "black")
+      |> custom("gravity", "center")
 
     Enum.each(
       image_art,
@@ -93,8 +94,8 @@ defmodule AsciiCanvas.Canvas.DrawImage do
       }'"
     )
     |> Mogrify.Draw.text(
-      art.position.x,
-      art.position.y,
+      art.position.x + art.width,
+      art.position.y + art.width,
       create_horizontal_border(art.length, art.fill)
     )
     |> create(path: image_path(@image_name))
@@ -132,8 +133,6 @@ defmodule AsciiCanvas.Canvas.DrawImage do
     draw_rectangle(art.length, art.width, " ", art.fill)
   end
 
-  # defp rectangle(_art), do: IO.inspect(nil)
-
   defp save_image_url(url), do: Canvas.create_image(%{"url" => url})
 
   defp create_horizontal_border(width, c),
@@ -153,5 +152,5 @@ defmodule AsciiCanvas.Canvas.DrawImage do
 
   defp draw_character(c), do: IO.write(c)
 
-  defp image_path(name), do: to_string(:code.priv_dir(:ascii_canvas)) <> "/images/#{name}.png"
+  defp image_path(name), do: "./images/#{name}.png"
 end
