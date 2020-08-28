@@ -13,12 +13,12 @@ Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
 # TASK
 
-Implement REST API to generate Ascii art on a fixed size canvas at specified ``x, y``  position on with a specified length/width `w`, height `h` , border character `b` as `boarder`, and fill character `f` as `fill` and shape `s`
+Implement REST API to generate Ascii art on a fixed size canvas at specified ``x, y``  position on with a specified length/width `w`, height `h` , border character `b` as `border`, and fill character `f` as `fill` and shape `s`
 
 ```
     - x: Integer - Horizontal positioning of the shape on canvas
     - y: Integer - Vertical positioning of the shape on canvas
-    - w: Integer - length of the shape on the canvas. (Number of characters on horizontally boarder)
+    - w: Integer - length of the shape on the canvas. (Number of characters on horizontally border)
     - h: Integer - height  of the shape on the canvas. (Number of characters vertically)
     - f: String - Ascii character to print inside the shape
     - b: String - Ascii character to print the border od the shape
@@ -26,37 +26,67 @@ Implement REST API to generate Ascii art on a fixed size canvas at specified ``x
 ```
 
 # Request
-- fill & boarder parameter are optional
-- At least one of fill / boarder should be supplied 
-
+- fill & border parameter are optional
+- At least one of fill / border should be supplied 
+- You create one or more shapes on the same canvas.
 ````
 {
-    "position": {
-        "x": 0,
-        "y": 0
-    },
-    "fill": "-",
-    "boarder": "@",
-    "length" : 10,
-    "width" : 10,
-    "shape": "rectangle"
-}
+    	"images": [
+    		{
+    			"position": {
+    				"x": 20,
+    				"y": 20
+    			},
+    			"fill": "-",
+    			"border": "@",
+    			"length": 10,
+    			"width": 10,
+    			"shape": "rectangle"
+    		},
+    		{
+    			"position": {
+    				"x": 20,
+    				"y": 40
+    			},
+    			"fill": "-",
+    			"border": "@",
+    			"length": 10,
+    			"width": 10,
+    			"shape": "rectangle"
+    		}
+    	]
+    }
 ````
 Curl
 
     curl --request POST \
-      --url http://localhost:5000/api/v1 \
+      --url http://localhost:4000/api/images \
       --header 'content-type: application/json' \
       --data '{
-    	"position": {
-    		"x": 0,
-    		"y": 0
-    	},
-    	"fill": "-",
-    	"boarder": "@",
-    	"length": 10,
-    	"width": 10,
-    	"shape": "rectangle"
+    	"images": [
+    		{
+    			"position": {
+    				"x": 20,
+    				"y": 20
+    			},
+    			"fill": "-",
+    			"border": "@",
+    			"length": 10,
+    			"width": 10,
+    			"shape": "rectangle"
+    		},
+    		{
+    			"position": {
+    				"x": 20,
+    				"y": 40
+    			},
+    			"fill": "-",
+    			"border": "@",
+    			"length": 10,
+    			"width": 10,
+    			"shape": "rectangle"
+    		}
+    	]
     }'
 
 
@@ -78,7 +108,7 @@ Curl
    "status": failed,
    "message": "Error generating canvas",
    "error": {
-         "message": "Must suplly a fill or boarder value"
+         "message": "Must suplly a fill or border value"
    }
 }
 ```
