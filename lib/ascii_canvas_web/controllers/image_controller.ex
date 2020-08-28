@@ -40,7 +40,6 @@ defmodule AsciiCanvasWeb.ImageController do
 
   defp process_request(conn, image_params) do
     with {:ok, %Image{} = image} <- DrawImage.draw(image_params) do
-
       response = %{
         status: "successful",
         message: "Canvas generated successfully",
@@ -60,7 +59,4 @@ defmodule AsciiCanvasWeb.ImageController do
   end
 
   defp parse_url(image, conn), do: %{image | url: "#{request_url(conn)}/#{image.url}"}
-
-
-
 end

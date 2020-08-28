@@ -4,125 +4,103 @@ defmodule AsciiCanvas.Canvas.DrawImage do
   alias AsciiCanvas.Canvas
   import Mogrify
 
-  @image_name :os.system_time(:millisecond) |> Integer.to_string()
+  @image_name :os.system_time(:millisecond)
+              |> Integer.to_string()
 
-  # My research show usage of imagemick functionality could help in the production of the image
-
-  def draw(image_params) do
+  def draw(image_art) do
     image =
       %Mogrify.Image{path: "#{@image_name}.png", ext: "png"}
       |> custom("size", "250x250")
       |> canvas("white")
       |> custom("fill", "black")
 
-    Enum.each(image_params, fn art ->
-      on_canvas_draw(image, art)
-    end)
+    Enum.each(
+      image_art,
+      fn art ->
+        art = Helper.atomize_map_keys(art)
+
+        draw_on_canvas(art, image)
+      end
+    )
 
     save_image_url("#{@image_name}.png")
   end
 
-  defp on_canvas_draw( image,
-         %{
-            "length" => _length,
-            "width" => _width,
-            "border" => _border,
-            "position" => _position} =
-           art
-       ) do
-
-    draw_on_console(art)
-    params = Helper.atomize_map_keys(art)
+  defp draw_on_canvas(art, image) when is_map_key(art, :fill) and is_map_key(art, :border) do
+    rectangle(art)
 
     Mogrify.Draw.text(
       image,
-      params.position.x,
-      params.position.y,
-      create_horizontal_border(params.length, params.border)
+      art.position.x,
+      art.position.y,
+      create_horizontal_border(art.length, art.border)
     )
-    |> custom( "draw", "translate 50,50 rotate -90 text #{params.position.x},#{params.position.y} '#{create_vertical_border(4, params.border)}'")
     |> Mogrify.Draw.text(
-      params.position.x,
-      params.position.y,
-      create_horizontal_border(params.length, params.border)
-    ) |> create(path: image_path(@image_name))
-  end
-
-  defp on_canvas_draw( image, %{"length" => _length, "width" => _width, "fill" => _fill, "position" => _position} = art ) do
-    draw_on_console(art)
-
-    params = Helper.atomize_map_keys(art)
-
-    Mogrify.Draw.text(
-      image,
-      params.position.x,
-      params.position.y,
-      create_horizontal_border(params.length, params.fill)
+      art.position.x,
+      art.position.y,
+      create_fill(art.length, art.fill)
     )
     |> custom(
       "draw",
-      "translate 50,50 rotate -90 text #{params.position.x},#{params.position.y} ' #{
-        create_vertical_border(4, params.fill)
-      }'")
-    |> Mogrify.Draw.text(
-      params.position.x,
-      params.position.y,
-      create_horizontal_border(params.length, params.fill)
-    )
-    |> create(path: image_path(@image_name))
-    |> IO.inspect()
-
-  end
-
-  defp on_canvas_draw( image,
-         %{
-           "length" => _length,
-           "width" => _width,
-           "fill" => _fill,
-           "border" => _border,
-           "position" => _position
-         } = art
-       ) do
-
-    draw_on_console(art)
-    params = Helper.atomize_map_keys(art)
-
-    Mogrify.Draw.text(
-      params.position.x,
-      params.position.y,
-      create_horizontal_border(params.length, params.border)
-    )
-    |> Mogrify.Draw.text(
-      image,
-      params.position.x,
-      params.position.y,
-      create_fill(params.length, params.fill)
-    )
-    |> custom(
-      "draw",
-      "translate 50,50 rotate -90 text #{params.position.x},#{params.position.y} ' #{
-        create_vertical_border(4, params.border)
+      "translate 50,50 rotate -90 text #{art.position.x},#{art.position.y} ' #{
+        create_vertical_border(4, art.border)
       }'"
     )
     |> Mogrify.Draw.text(
-      image,
-      params.position.x,
-      params.position.y,
-      create_horizontal_border(params.length, params.border)
+      art.position.x,
+      art.position.y,
+      create_horizontal_border(art.length, art.border)
     )
     |> create(path: image_path(@image_name))
-    |> IO.inspect()
   end
 
-  @doc """
-   Output individual ascii characters in the console.
-  """
-  def draw_on_console(image_params) do
-    image_params |> Enum.each(fn x -> rectangle(x) end)
+  defp draw_on_canvas(art, image) when is_map_key(art, :border) do
+    rectangle(art)
+
+    Mogrify.Draw.text(
+      image,
+      art.position.x,
+      art.position.y,
+      create_horizontal_border(art.length, art.border)
+    )
+    |> custom(
+      "draw",
+      "translate 50,50 rotate -90 text #{art.position.x},#{art.position.y} '#{
+        create_vertical_border(4, art.border)
+      }'"
+    )
+    |> Mogrify.Draw.text(
+      art.position.x,
+      art.position.y,
+      create_horizontal_border(art.length, art.border)
+    )
+    |> create(path: image_path(@image_name))
+  end
+
+  defp draw_on_canvas(art, image) when is_map_key(art, :fill) do
+    rectangle(art)
+
+    Mogrify.Draw.text(
+      image,
+      art.position.x,
+      art.position.y,
+      create_horizontal_border(art.length, art.fill)
+    )
+    |> custom(
+      "draw",
+      "translate 50,50 rotate -90 text #{art.position.x},#{art.position.y} ' #{
+        create_vertical_border(4, art.fill)
+      }'"
+    )
+    |> Mogrify.Draw.text(
+      art.position.x,
+      art.position.y,
+      create_horizontal_border(art.length, art.fill)
+    )
+    |> create(path: image_path(@image_name))
   end
 
   def draw_rectangle(r, c, out, inside) do
-    In
     Enum.each(
       1..r,
       fn x ->
@@ -142,10 +120,19 @@ defmodule AsciiCanvas.Canvas.DrawImage do
     )
   end
 
-  defp rectangle(%{"length" => length, "width" => width, "border" => border}), do: draw_rectangle(length, width, border, " ")
-  defp rectangle(%{"length" => length, "width" => width, "fill" => fill}), do: draw_rectangle(length, width, " ", fill)
-  defp rectangle(%{"length" => length, "width" => width, "border" => border, "fill" => fill}), do: draw_rectangle(length, width, border, fill)
-  defp rectangle(_art), do: nil
+  defp rectangle(art) when is_map_key(art, :fill) and is_map_key(art, :border) do
+    draw_rectangle(art.length, art.width, art.border, art.fill)
+  end
+
+  defp rectangle(art) when is_map_key(art, :border) do
+    draw_rectangle(art.length, art.width, art.border, " ")
+  end
+
+  defp rectangle(art) when is_map_key(art, :fill) do
+    draw_rectangle(art.length, art.width, " ", art.fill)
+  end
+
+  # defp rectangle(_art), do: IO.inspect(nil)
 
   defp save_image_url(url), do: Canvas.create_image(%{"url" => url})
 

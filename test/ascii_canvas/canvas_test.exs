@@ -54,7 +54,6 @@ defmodule AsciiCanvas.CanvasTest do
       assert {:ok, %Art{} = art} = Canvas.save_art_work_parameter(@valid_art_attrs)
       assert art.border == "@"
       assert art.length == 10
-
     end
 
     test "save art parameter/1 with invalid data returns error changeset" do
